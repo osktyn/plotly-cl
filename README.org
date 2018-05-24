@@ -61,7 +61,7 @@ JavaScript code is copied below. Lisp code follows.
   Plotly.newPlot('myDiv', data, layout);
 #+END_SRC
 
-#+BEGIN_SRC common-lisp
+#+BEGIN_SRC lisp
   (in-package :plotly-cl)
 
   (let ((trace-1 `((:x . #(1 2 3 4 5))
@@ -90,5 +90,8 @@ JavaScript code is copied below. Lisp code follows.
                                         (:size . 20)
                                         (:color . "grey")))))
                   (:title . "Data Labels on the Plot"))))
-    (pl-plot (list trace-1 trace-2) :layout layout :width 1000 :height 500))
+    (pl-plot (list trace-1 trace-2) :layout layout :width 1000 :height 800))
 #+END_SRC
+
+#+RESULTS:
+: #<SB-IMPL::PROCESS 6064 :RUNNING>

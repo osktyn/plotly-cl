@@ -2,6 +2,8 @@
 
 (in-package #:plotly-cl)
 
+(defparameter *windows-browser* "firefox")
+
 (cl-interpol:enable-interpol-syntax)
 
 (defun generate-plot (plot-code width height)
@@ -25,8 +27,11 @@
   "Write output to the file and open browser"
   (uiop/stream:with-temporary-file (:pathname pn :stream stream :direction :output :keep t :type "html")
     (write-string (generate-plot plot-code width height) stream)
-    (if (string= (software-type) "Win32")
-        (sb-ext:run-program "firefox" (list (cl-ppcre:regex-replace-all "/" (namestring pn) "\\")) :wait nil :search t)
+    (if (uiop:os-windows-p)
+        (sb-ext:run-program *windows-browser* (list (cl-ppcre:regex-replace-all "/" (namestring pn) "\\")) :wait nil :search t)
+        ;; Both below works by themselves but error code means that graph is not opened when wrapped in open-plot
+                                        ;(uiop:run-program  (cl-ppcre:regex-replace-all "/" (namestring pn) "\\") :ignore-error-status t)
+                                        ;(uiop:run-program (namestring pn) :ignore-error-status t) ; https://bugs.launchpad.net/asdf/+bug/1470519
         (sb-ext:run-program (or (uiop:getenv "BROWSER") "xdg-open") (list (namestring pn)) :wait nil :search t))))
 
 (defun pl-plot (traces &key layout (width 1000) (height 700))
