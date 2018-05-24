@@ -25,7 +25,9 @@
   "Write output to the file and open browser"
   (uiop/stream:with-temporary-file (:pathname pn :stream stream :direction :output :keep t :type "html")
     (write-string (generate-plot plot-code width height) stream)
-    (sb-ext:run-program (or (uiop:getenv "BROWSER") "xdg-open") (list (namestring pn)) :wait nil :search t)))
+    (if (string= (software-type) "Win32")
+        (sb-ext:run-program "firefox" (list (cl-ppcre:regex-replace-all "/" (namestring pn) "\\")) :wait nil :search t)
+        (sb-ext:run-program (or (uiop:getenv "BROWSER") "xdg-open") (list (namestring pn)) :wait nil :search t))))
 
 (defun pl-plot (traces &key layout (width 1000) (height 700))
   "Plot the data (list of traces)"
